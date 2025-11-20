@@ -761,7 +761,7 @@ const BusDashboard: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-6"
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-6"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-royal to-gold flex items-center justify-center">
@@ -772,7 +772,7 @@ const BusDashboard: React.FC = () => {
               <p className="text-white/80 text-xs sm:text-sm">Welcome {busUser?.username || ''}</p>
             </div>
           </div>
-          <Button onClick={logout} variant="outline" className="text-white border-white/20 hover:bg-white/10">Logout</Button>
+          <Button onClick={logout} variant="outline" className="w-full sm:w-auto text-white border-white/20 hover:bg-white/10">Logout</Button>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.135 }} className="mt-4">
@@ -869,7 +869,7 @@ const BusDashboard: React.FC = () => {
             </CardHeader>
             <CardContent className="p-3 sm:p-6">
               {busUser ? (
-                <div className="grid gap-3 sm:gap-4 grid-cols-2">
+                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
                   <div>
                     <div className="text-xs sm:text-sm text-muted-foreground">Bus ID</div>
                     <div className="font-mono text-xs sm:text-base">{busUser.busId}</div>
