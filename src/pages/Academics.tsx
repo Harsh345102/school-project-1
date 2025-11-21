@@ -167,18 +167,18 @@ const Academics = () => {
 
       {/* Academic Departments */}
       <section className="section-padding bg-gradient-to-b from-background to-muted/20">
-        <div className="container-wide px-4 sm:px-6">
+        <div className="container-wide px-3 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12 sm:mb-16"
+            className="text-center mb-8 sm:mb-12"
           >
-            <h2 className="text-2xl sm:text-4xl font-heading font-bold mb-4 sm:mb-6">Our Departments</h2>
-            <p className="text-base sm:text-xl text-muted-foreground px-2 sm:px-0">Explore our comprehensive academic programs</p>
+            <h2 className="text-xl sm:text-3xl font-heading font-bold mb-2 sm:mb-4">Our Departments</h2>
+            <p className="text-xs sm:text-lg text-muted-foreground px-2 sm:px-0">Explore our comprehensive academic programs</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
             {departments.map((dept, index) => {
               const IconComponent = iconMap[dept.icon] || Book;
               return (
@@ -197,27 +197,27 @@ const Academics = () => {
                     type: "spring",
                     stiffness: 300
                   }}
-                  className="card-3d p-4 sm:p-6 group cursor-pointer relative overflow-hidden"
+                  className="card-3d p-2 sm:p-3 group cursor-pointer relative overflow-hidden"
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${dept.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
-                  <div className="relative z-10 space-y-3 sm:space-y-4">
+                  <div className="relative z-10 space-y-1.5 sm:space-y-2">
                     <motion.div
                       whileHover={{ rotate: 360, scale: 1.2 }}
                       transition={{ duration: 0.6 }}
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-gold/20 to-gold/40 flex items-center justify-center"
+                      className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-gold/20 to-gold/40 flex items-center justify-center"
                     >
-                      <IconComponent className="h-5 w-5 sm:h-6 sm:w-6 text-gold" />
+                      <IconComponent className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gold" />
                     </motion.div>
-                    <h3 className="text-lg sm:text-xl font-heading font-semibold">{dept.title}</h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{dept.description}</p>
-                    <div className="space-y-1">
-                      {dept.programs.map((program, idx) => (
+                    <h3 className="text-xs sm:text-sm font-heading font-semibold line-clamp-2">{dept.title}</h3>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight line-clamp-2">{dept.description}</p>
+                    <div className="space-y-0.5">
+                      {dept.programs.slice(0, 2).map((program, idx) => (
                         <motion.div
                           key={idx}
                           initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.1 + idx * 0.05 }}
-                          className="text-xs sm:text-sm text-gold font-medium"
+                          className="text-[9px] sm:text-xs text-gold font-medium line-clamp-1"
                         >
                           • {program}
                         </motion.div>
@@ -233,18 +233,18 @@ const Academics = () => {
 
       {/* Academic Achievements */}
       <section className="section-padding bg-gradient-to-r from-royal/5 via-background to-crimson/5">
-        <div className="container-wide px-4 sm:px-6">
+        <div className="container-wide px-3 sm:px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12 sm:mb-16"
+            className="text-center mb-8 sm:mb-12"
           >
-            <h2 className="text-2xl sm:text-4xl font-heading font-bold mb-4 sm:mb-6">Academic Performance</h2>
-            <p className="text-base sm:text-xl text-muted-foreground px-2 sm:px-0">Excellence reflected in our students' achievements</p>
+            <h2 className="text-xl sm:text-3xl font-heading font-bold mb-2 sm:mb-4">Academic Performance</h2>
+            <p className="text-xs sm:text-lg text-muted-foreground px-2 sm:px-0">Excellence reflected in our students' achievements</p>
           </motion.div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 mb-12 sm:mb-16">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-12">
             {achievements.map((achievement, index) => (
               <motion.div
                 key={achievement.id}
@@ -261,17 +261,17 @@ const Academics = () => {
                   type: "spring",
                   stiffness: 300
                 }}
-                className="card-3d p-4 sm:p-8 text-center group cursor-pointer"
+                className="card-3d p-2 sm:p-4 text-center group cursor-pointer"
               >
                 <motion.div
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
                   transition={{ delay: index * 0.1 + 0.3, type: "spring", stiffness: 300 }}
-                  className="text-2xl sm:text-5xl font-heading font-bold text-gradient-gold mb-2 sm:mb-4"
+                  className="text-lg sm:text-4xl font-heading font-bold text-gradient-gold mb-1 sm:mb-2"
                 >
                   {achievement.value}
                 </motion.div>
-                <p className="text-xs sm:text-lg text-muted-foreground">{achievement.label}</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground line-clamp-2">{achievement.label}</p>
               </motion.div>
             ))}
           </div>

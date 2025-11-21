@@ -228,7 +228,7 @@ const About = () => {
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-heading font-bold mb-4 sm:mb-6">
               <TextType 
                 text={aboutData.heroTitle}
-                className="text-gradient-gold"
+                className="text-sky-gradient"
                 typingSpeed={100}
                 loop={false}
                 showCursor={false}

@@ -17,25 +17,21 @@ const Compass: React.FC<CompassProps> = ({ busLocation, previousLocation, neonGr
   const animRef = useRef<number>(0);
   const rafRef = useRef<number | null>(null);
 
-  // Calculate bearing between two points
+  // Calculate bearing between two points (from previous to current location)
   const calculateBearing = (start: { lat: number; lng: number }, end: { lat: number; lng: number }): number => {
     // Handle case where locations are the same or invalid
     if (!start || !end || (start.lat === end.lat && start.lng === end.lng)) {
       return 0;
     }
     
-    const startLat = (start.lat * Math.PI) / 180;
-    const startLng = (start.lng * Math.PI) / 180;
-    const endLat = (end.lat * Math.PI) / 180;
-    const endLng = (end.lng * Math.PI) / 180;
+    const lat1 = start.lat * Math.PI / 180;
+    const lat2 = end.lat * Math.PI / 180;
+    const dLng = (end.lng - start.lng) * Math.PI / 180;
     
-    const dLng = endLng - startLng;
+    const y = Math.sin(dLng) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
     
-    const y = Math.sin(dLng) * Math.cos(endLat);
-    const x = Math.cos(startLat) * Math.sin(endLat) - 
-              Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLng);
-    
-    let bearing = Math.atan2(y, x) * (180 / Math.PI);
+    let bearing = Math.atan2(y, x) * 180 / Math.PI;
     bearing = (bearing + 360) % 360;
     
     return bearing;
@@ -43,8 +39,8 @@ const Compass: React.FC<CompassProps> = ({ busLocation, previousLocation, neonGr
 
   // Convert bearing to compass direction
   const bearingToDirection = (bearing: number): string => {
-    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-    const index = Math.round(bearing / 45) % 8;
+    const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    const index = Math.round(bearing / 22.5) % 16;
     return directions[index];
   };
 
@@ -91,58 +87,87 @@ const Compass: React.FC<CompassProps> = ({ busLocation, previousLocation, neonGr
   }, [degrees]);
 
   return (
-    <Card className="bg-card/95 backdrop-blur-md border-border/50">
-      <CardContent className="p-4">
+    <Card className="bg-card/95 backdrop-blur-md border-border/50 w-full">
+      <CardContent className="p-3 sm:p-4">
         <div className="flex flex-col items-center">
-          <h3 className="text-sm font-medium mb-3">Bus Direction</h3>
+          <h3 className="text-xs sm:text-sm font-medium mb-2 sm:mb-3">Bus Direction</h3>
           
-          {/* Compass visualization */}
-          <div className="relative w-36 h-36 mb-3 neon-compass animate-glow">
-            {/* Outer ring + subtle radial */}
-            <div className="compass-ring" />
+          {/* Compass visualization - responsive sizing */}
+          <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 mb-2 sm:mb-3 neon-compass animate-glow flex items-center justify-center">
+            {/* Outer ring */}
+            <svg 
+              className="absolute inset-0 w-full h-full"
+              viewBox="0 0 200 200" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id={gradientId.current} x1="0" x2="1">
+                  <stop offset="0%" stopColor={gradient[0]} />
+                  <stop offset="100%" stopColor={gradient[1]} />
+                </linearGradient>
+              </defs>
+              
+              {/* Circle background */}
+              <circle cx="100" cy="100" r="95" fill="rgba(20, 20, 40, 0.8)" stroke={`url(#${gradientId.current})`} strokeWidth="2" />
+              
+              {/* Cardinal direction markers */}
+              <text x="100" y="25" textAnchor="middle" fontSize="16" fontWeight="bold" fill="white">N</text>
+              <text x="175" y="105" textAnchor="middle" fontSize="16" fontWeight="bold" fill="white">E</text>
+              <text x="100" y="180" textAnchor="middle" fontSize="16" fontWeight="bold" fill="white">S</text>
+              <text x="25" y="105" textAnchor="middle" fontSize="16" fontWeight="bold" fill="white">W</text>
+              
+              {/* Tick marks */}
+              {[...Array(360)].map((_, i) => {
+                const angle = (i * Math.PI) / 180;
+                const isCardinal = i % 90 === 0;
+                const isIntercardinal = i % 45 === 0;
+                const length = isCardinal ? 12 : isIntercardinal ? 8 : 4;
+                const x1 = 100 + 90 * Math.sin(angle);
+                const y1 = 100 - 90 * Math.cos(angle);
+                const x2 = 100 + (90 - length) * Math.sin(angle);
+                const y2 = 100 - (90 - length) * Math.cos(angle);
+                return (
+                  <line
+                    key={i}
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    stroke={isCardinal ? gradient[0] : 'rgba(255,255,255,0.3)'}
+                    strokeWidth={isCardinal ? 1.5 : 0.5}
+                  />
+                );
+              })}
+            </svg>
 
-            {/* Direction markers */}
-            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-sm font-bold text-white">N</div>
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm font-bold text-white">E</div>
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-sm font-bold text-white">S</div>
-            <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm font-bold text-white">W</div>
-
-            {/* Moving needle as SVG - rotates smoothly and has neon glow via CSS */}
+            {/* Moving needle */}
             <div
-              className="needle-wrapper"
-              style={{ transform: `translate(-50%, -50%) rotate(${animatedDeg}deg)` }}
+              className="absolute inset-0 flex items-center justify-center transition-transform"
+              style={{ transform: `rotate(${animatedDeg}deg)` }}
             >
               <svg
-                className="neon-needle"
-                width="64"
-                height="64"
+                className="w-3/4 h-3/4"
                 viewBox="0 0 64 64"
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
               >
-                <defs>
-                  <linearGradient id={gradientId.current} x1="0" x2="1">
-                    <stop offset="0%" stopColor={gradient[0]} />
-                    <stop offset="100%" stopColor={gradient[1]} />
-                  </linearGradient>
-                </defs>
                 {/* Arrow shaft */}
                 <rect x="30" y="8" width="4" height="32" rx="2" fill={`url(#${gradientId.current})`} />
                 {/* Arrow head */}
-                <path d="M32 4 L44 24 L32 18 L20 24 Z" fill="#7C3AED" opacity="0.95" />
-                {/* Tail circle */}
-                <circle cx="32" cy="52" r="4" fill="#ffffff" />
+                <path d="M32 4 L42 22 L32 16 L22 22 Z" fill="#7C3AED" />
+                {/* Tail */}
+                <circle cx="32" cy="52" r="3" fill="#ffffff" />
               </svg>
             </div>
 
-            {/* Center glow */}
-            <div className="absolute top-1/2 left-1/2 neon-center transform -translate-x-1/2 -translate-y-1/2" />
+            {/* Center glow dot */}
+            <div className="absolute w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r from-green-400 to-blue-400 shadow-lg shadow-green-400/50 z-10" />
           </div>
           
-          {/* Direction indicator */}
+          {/* Direction and degree display */}
           <div className="text-center">
-            <div className="text-2xl font-bold">{direction}</div>
-            <div className="text-xs text-muted-foreground">{Math.round(animatedDeg)}°</div>
+            <div className="text-lg sm:text-2xl font-bold text-white">{direction}</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">{Math.round(animatedDeg)}°</div>
           </div>
         </div>
       </CardContent>

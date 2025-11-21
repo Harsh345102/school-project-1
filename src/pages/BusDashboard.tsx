@@ -127,8 +127,8 @@ const BusDashboard: React.FC = () => {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [availSearch, setAvailSearch] = useState('');
   const [selectedSearch, setSelectedSearch] = useState('');
-  const [classFilter, setClassFilter] = useState<string>('all');
-  const [sectionFilter, setSectionFilter] = useState<string>('all');
+  const [classFilter, setClassFilter] = useState<string>('');
+  const [sectionFilter, setSectionFilter] = useState<string>('');
   const [availMode, setAvailMode] = useState<'all' | 'not_selected' | 'selected_only'>('all');
   const [tracking, setTracking] = useState(false);
   const [watchId, setWatchId] = useState<number | null>(null);
@@ -141,6 +141,9 @@ const BusDashboard: React.FC = () => {
   const [msgText, setMsgText] = useState('');
   const [msgAudience, setMsgAudience] = useState<'all'|'individual'>('all');
   const [recipientIds, setRecipientIds] = useState<Set<string>>(new Set());
+  const [filterClass, setFilterClass] = useState('');
+  const [filterSection, setFilterSection] = useState('');
+  const [filterRoll, setFilterRoll] = useState('');
   const [img1, setImg1] = useState<string | null>(null);
   const [img2, setImg2] = useState<string | null>(null);
   // Principal messaging
@@ -385,9 +388,9 @@ const BusDashboard: React.FC = () => {
   const availableStudents = useMemo(() => {
     const q = availSearch.trim().toLowerCase();
     return students
-      // respect class/section filters
-      .filter(s => classFilter === 'all' || String(s.class) === classFilter)
-      .filter(s => sectionFilter === 'all' || String(s.section).toUpperCase() === sectionFilter)
+      // respect class/section filters - only filter if not empty
+      .filter(s => !classFilter || String(s.class) === classFilter)
+      .filter(s => !sectionFilter || String(s.section).toUpperCase() === sectionFilter.toUpperCase())
       // availability mode
       .filter(s => {
         if (availMode === 'not_selected') return !assignedStudentIds.has(s.id);
@@ -409,8 +412,8 @@ const BusDashboard: React.FC = () => {
     return myAssigned
       .map(a => ({ a, s: students.find(st => st.id === a.studentId) }))
       .filter((x): x is { a: Assignment, s: Student } => Boolean(x.s))
-      .filter(({ s }) => classFilter === 'all' || String(s.class) === classFilter)
-      .filter(({ s }) => sectionFilter === 'all' || String(s.section).toUpperCase() === sectionFilter)
+      .filter(({ s }) => !classFilter || String(s.class) === classFilter)
+      .filter(({ s }) => !sectionFilter || String(s.section).toUpperCase() === sectionFilter.toUpperCase())
       .filter(({ s }) => !q ||
         s.name.toLowerCase().includes(q) ||
         (s.class || '').toString().toLowerCase().includes(q) ||
@@ -914,30 +917,87 @@ const BusDashboard: React.FC = () => {
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" variant={msgType === 'good' ? 'default' : 'outline'} onClick={() => setMsgType('good')} className="text-xs sm:text-sm">Good ★</Button>
                 <Button size="sm" variant={msgType === 'bad' ? 'default' : 'outline'} onClick={() => setMsgType('bad')} className="text-xs sm:text-sm">Bad ⭕</Button>
-                <Select value={msgAudience} onValueChange={(v) => setMsgAudience(v as any)}>
-                  <SelectTrigger className="w-48"><SelectValue placeholder="Audience" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All selected students</SelectItem>
-                    <SelectItem value="individual">Individual students</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
+              
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+                <Button 
+                  size="sm" 
+                  variant={msgAudience === 'all' ? 'default' : 'outline'} 
+                  onClick={() => setMsgAudience('all')}
+                  className="text-xs sm:text-sm"
+                >
+                  Send to All
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant={msgAudience === 'individual' ? 'default' : 'outline'} 
+                  onClick={() => setMsgAudience('individual')}
+                  className="text-xs sm:text-sm"
+                >
+                  Filter Student
+                </Button>
+              </div>
+              
               {msgAudience === 'individual' && (
-                <div className="grid sm:grid-cols-2 gap-2 max-h-44 overflow-auto pr-1">
-                  {myAssigned.map(a => {
-                    const s = students.find(st => st.id === a.studentId);
-                    if (!s) return null;
-                    const checked = recipientIds.has(s.id);
-                    return (
-                      <label key={s.id} className="flex items-center gap-2 border rounded p-2">
-                        <Checkbox checked={checked} onCheckedChange={(v: any) => toggleRecipient(s.id, Boolean(v))} />
-                        <div>
-                          <div className="text-sm font-medium">{s.name}</div>
-                          <div className="text-xs text-muted-foreground">Class {s.class} • Section {s.section} • Roll {s.rollNumber}</div>
-                        </div>
-                      </label>
-                    );
-                  })}
+                <div className="space-y-3 border border-border/50 rounded-lg p-3 bg-card/50">
+                  <div className="text-sm font-medium">Filter by Student Details</div>
+                  <div className="grid sm:grid-cols-3 gap-2">
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground">Class</label>
+                      <Input 
+                        type="text" 
+                        placeholder="e.g., 10" 
+                        className="text-xs mt-1"
+                        value={filterClass}
+                        onChange={(e) => setFilterClass(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground">Section</label>
+                      <Input 
+                        type="text" 
+                        placeholder="e.g., A" 
+                        className="text-xs mt-1"
+                        value={filterSection}
+                        onChange={(e) => setFilterSection(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-muted-foreground">Roll Number</label>
+                      <Input 
+                        type="text" 
+                        placeholder="e.g., 1" 
+                        className="text-xs mt-1"
+                        value={filterRoll}
+                        onChange={(e) => setFilterRoll(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid sm:grid-cols-2 gap-2 max-h-44 overflow-auto pr-1">
+                    {myAssigned.map(a => {
+                      const s = students.find(st => st.id === a.studentId);
+                      if (!s) return null;
+                      
+                      // Filter logic
+                      const matchClass = !filterClass || s.class?.toString().includes(filterClass);
+                      const matchSection = !filterSection || s.section?.toString().toUpperCase().includes(filterSection.toUpperCase());
+                      const matchRoll = !filterRoll || s.rollNumber?.toString().includes(filterRoll);
+                      
+                      if (!matchClass || !matchSection || !matchRoll) return null;
+                      
+                      const checked = recipientIds.has(s.id);
+                      return (
+                        <label key={s.id} className="flex items-center gap-2 border rounded p-2 hover:bg-muted/50 cursor-pointer transition-colors">
+                          <Checkbox checked={checked} onCheckedChange={(v: any) => toggleRecipient(s.id, Boolean(v))} />
+                          <div>
+                            <div className="text-sm font-medium">{s.name}</div>
+                            <div className="text-xs text-muted-foreground">Class {s.class} • Section {s.section} • Roll {s.rollNumber}</div>
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
               <div>
@@ -1075,39 +1135,36 @@ const BusDashboard: React.FC = () => {
               <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
                   <label className="text-xs text-muted-foreground">Class</label>
-                  <Select value={classFilter} onValueChange={setClassFilter}>
-                    <SelectTrigger className="mt-1"><SelectValue placeholder="All" /></SelectTrigger>
-                    <SelectContent>
-                      {classOptions.map(opt => (
-                        <SelectItem key={opt} value={opt}>{opt === 'all' ? 'All' : opt}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Input 
+                    type="text"
+                    placeholder="Enter class" 
+                    value={classFilter} 
+                    onChange={(e) => setClassFilter(e.target.value)}
+                    className="mt-1 text-sm"
+                  />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Section</label>
-                  <Select value={sectionFilter} onValueChange={setSectionFilter}>
-                    <SelectTrigger className="mt-1"><SelectValue placeholder="All" /></SelectTrigger>
-                    <SelectContent>
-                      {sectionOptions.map(opt => (
-                        <SelectItem key={opt} value={opt}>{opt === 'all' ? 'All' : opt}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Input 
+                    type="text"
+                    placeholder="Enter section" 
+                    value={sectionFilter} 
+                    onChange={(e) => setSectionFilter(e.target.value)}
+                    className="mt-1 text-sm"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs text-muted-foreground">Show</label>
-                  <Select value={availMode} onValueChange={(v) => setAvailMode(v as any)}>
-                    <SelectTrigger className="mt-1"><SelectValue placeholder="All" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="not_selected">Not Selected</SelectItem>
-                      <SelectItem value="selected_only">Selected (mine)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <label className="text-xs text-muted-foreground">Roll Number</label>
+                  <Input 
+                    type="text"
+                    placeholder="Enter roll" 
+                    value={availSearch}
+                    onChange={(e) => setAvailSearch(e.target.value)}
+                    className="mt-1 text-sm"
+                  />
                 </div>
                 <div className="flex items-end">
-                  <Button variant="outline" className="w-full" onClick={() => { setClassFilter('all'); setSectionFilter('all'); setAvailMode('all'); setAvailSearch(''); setSelectedSearch(''); }}>Clear Filters</Button>
+                  <Button variant="outline" className="w-full" onClick={() => { setClassFilter(''); setSectionFilter(''); setAvailMode('all'); setAvailSearch(''); setSelectedSearch(''); }}>Clear Filters</Button>
                 </div>
               </div>
 

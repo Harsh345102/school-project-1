@@ -198,9 +198,9 @@ const Hero = () => {
       </div>
 
       {/* Floating Elements - Hidden on mobile */}
-      <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-gold/20 animate-float hidden sm:block"></div>
-      <div className="absolute top-40 right-20 w-16 h-16 rounded-full bg-crimson/20 animate-float hidden sm:block" style={{ animationDelay: "2s" }}></div>
-      <div className="absolute bottom-40 left-20 w-12 h-12 rounded-full bg-gold/30 animate-float hidden sm:block" style={{ animationDelay: "4s" }}></div>
+      <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-sky-400/25 animate-float hidden sm:block"></div>
+      <div className="absolute top-40 right-20 w-16 h-16 rounded-full bg-blue-400/20 animate-float hidden sm:block" style={{ animationDelay: "2s" }}></div>
+      <div className="absolute bottom-40 left-20 w-12 h-12 rounded-full bg-cyan-400/20 animate-float hidden sm:block" style={{ animationDelay: "4s" }}></div>
 
       {/* Content */}
       <div className="relative z-10 container-wide px-4 sm:px-6 py-8 sm:py-16 text-center">
@@ -208,13 +208,13 @@ const Hero = () => {
           {/* Main Heading */}
           <div className="space-y-4 sm:space-y-6">
             <h1 
-              className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight sm:leading-normal text-gradient-sky-gold"
+              className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight sm:leading-normal text-sky-gradient"
               style={{ fontFamily: homepageData.fonts.heading }}
             >
               {homepageData.heroTitle}
             </h1>
             <p 
-              className="text-sm xs:text-base sm:text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed px-2 sm:px-0 text-gradient-gold"
+              className="text-sm xs:text-base sm:text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed px-2 sm:px-0 text-sky-gradient"
               style={{ fontFamily: homepageData.fonts.body }}
             >
               {homepageData.heroSubtitle}
@@ -237,17 +237,17 @@ const Hero = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 pt-6 sm:pt-16 px-2 sm:px-0 relative">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-6 pt-4 sm:pt-12 px-1 sm:px-0 relative">
             {/* Glowing Background */}
             <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute left-1/4 top-1/2 w-32 h-32 bg-gold/10 rounded-full blur-2xl -translate-y-1/2"></div>
-              <div className="absolute right-1/4 top-1/2 w-32 h-32 bg-crimson/10 rounded-full blur-2xl -translate-y-1/2"></div>
+              <div className="absolute left-1/4 top-1/2 w-32 h-32 bg-sky-400/15 rounded-full blur-2xl -translate-y-1/2"></div>
+              <div className="absolute right-1/4 top-1/2 w-32 h-32 bg-blue-400/12 rounded-full blur-2xl -translate-y-1/2"></div>
             </div>
 
             {stats.map((stat, index) => (
               <div
                 key={stat.label}
-                className="card-3d p-4 text-center group relative overflow-hidden rounded-xl hover:scale-105 transition-transform duration-300"
+                className="card-3d p-2 sm:p-3 text-center group relative overflow-hidden rounded-xl hover:scale-105 transition-transform duration-300"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {/* Animated Background Gradient - Always Visible */}
@@ -262,26 +262,26 @@ const Hero = () => {
                   background: 'radial-gradient(circle at center, rgba(255, 193, 7, 0.05) 0%, transparent 70%)'
                 }}></div>
 
-                <div className="flex flex-col items-center space-y-3 relative z-10">
+                <div className="flex flex-col items-center space-y-1.5 sm:space-y-2 relative z-10">
                   {/* Icon Container with Enhanced Effects - Always Visible */}
                   <div className="relative">
-                    <div className="absolute inset-0 w-10 h-10 sm:w-12 sm:h-12 bg-gold/40 rounded-full blur-xl opacity-100 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gold/40 to-gold/60 flex items-center justify-center group-hover:scale-125 hover:scale-120 group-hover:shadow-lg group-hover:shadow-gold/60 shadow-md shadow-gold/40 transition-all duration-300">
-                      <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white group-hover:text-white transition-colors duration-300" />
+                    <div className="absolute inset-0 w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gold/40 rounded-full blur-xl opacity-100 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                    <div className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-gold/40 to-gold/60 flex items-center justify-center group-hover:scale-125 hover:scale-120 group-hover:shadow-lg group-hover:shadow-gold/60 shadow-md shadow-gold/40 transition-all duration-300">
+                      <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white group-hover:text-white transition-colors duration-300" />
                     </div>
                   </div>
 
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {/* Animated Number Counter Effect - Always Visible */}
-                    <div className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold via-amber-300 to-gold group-hover:from-amber-200 group-hover:via-gold group-hover:to-amber-200 transition-all duration-300 animate-pulse-soft">
+                    <div className="text-sm sm:text-lg md:text-2xl lg:text-3xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold via-amber-300 to-gold group-hover:from-amber-200 group-hover:via-gold group-hover:to-amber-200 transition-all duration-300 animate-pulse-soft">
                       {stat.value}
                     </div>
-                    <p className="text-muted-foreground text-sm sm:text-base group-hover:text-gold transition-colors duration-300 font-medium">{stat.label}</p>
+                    <p className="text-muted-foreground text-[10px] sm:text-xs md:text-sm group-hover:text-gold transition-colors duration-300 font-medium">{stat.label}</p>
                   </div>
 
                   {/* Floating Particles - Always Visible */}
-                  <div className="absolute top-2 left-2 w-1 h-1 bg-gold/100 rounded-full opacity-100 group-hover:opacity-100 animate-float transition-opacity" style={{ animationDuration: '2s' }}></div>
-                  <div className="absolute bottom-2 right-2 w-1.5 h-1.5 bg-gold/80 rounded-full opacity-100 group-hover:opacity-100 animate-float transition-opacity" style={{ animationDuration: '3s', animationDelay: '0.5s' }}></div>
+                  <div className="absolute top-1 left-1 w-1 h-1 bg-gold/100 rounded-full opacity-100 group-hover:opacity-100 animate-float transition-opacity" style={{ animationDuration: '2s' }}></div>
+                  <div className="absolute bottom-1 right-1 w-1 h-1 bg-gold/80 rounded-full opacity-100 group-hover:opacity-100 animate-float transition-opacity" style={{ animationDuration: '3s', animationDelay: '0.5s' }}></div>
                 </div>
               </div>
             ))}

@@ -193,11 +193,11 @@ const Navigation = () => {
       animate={{ y: 0 }}
       transition={{ duration: 0, ease: "easeOut" }}
       style={{
-        background: scrolled ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+        background: scrolled ? 'rgba(15, 50, 90, 0.7)' : 'transparent',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.15)',
+        border: '1px solid rgba(135, 206, 250, 0.25)',
         borderRadius: '9999px',
-        boxShadow: '0 12px 30px rgba(9, 153, 236, 0.58)',
+        boxShadow: '0 12px 30px rgba(30, 144, 255, 0.35)',
         maxWidth: '1200px',
         margin: '0 auto'
       }}
@@ -533,7 +533,7 @@ const Navigation = () => {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0 }}
-              className="sm:hidden border-t border-border bg-background/95 backdrop-blur-xl"
+              className="sm:hidden border-t border-blue-400/30 bg-gradient-to-b from-blue-950/80 to-blue-900/60 backdrop-blur-xl"
             >
               <div className="p-4 space-y-1 max-h-[70vh] overflow-y-auto">
                 {navItems.map((item) => (
