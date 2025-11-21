@@ -1389,11 +1389,11 @@ Teacher ID: ${teacherId}`);
                   variant="outline"
                   size="sm"
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative p-2 hover:bg-gradient-to-r hover:from-sky-500/10 hover:to-purple-600/10 transition-all"
+                  className="relative p-2 bg-gradient-to-r from-blue-600/20 to-cyan-500/20 hover:from-blue-600/40 hover:to-cyan-500/40 border-blue-500/40 hover:border-blue-400/60 transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40"
                 >
-                  <Bell className="h-4 w-4 text-sky-500 hover:text-purple-600 transition-colors" />
+                  <Bell className="h-4 w-4 text-blue-400 hover:text-cyan-300 transition-colors drop-shadow-lg" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-gradient-to-br from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg shadow-red-500/50 animate-pulse">
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
@@ -1572,9 +1572,9 @@ Teacher ID: ${teacherId}`);
                   variant="outline"
                   size="sm"
                   onClick={() => setShowBusInbox(!showBusInbox)}
-                  className="relative p-2 hover:bg-gradient-to-r hover:from-purple-600/10 hover:to-sky-500/10 transition-all"
+                  className="relative p-2 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 border-purple-500/40 hover:border-purple-400/60 transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40"
                 >
-                  <Bus className="h-4 w-4 text-purple-500 hover:text-sky-600 transition-colors" />
+                  <Bus className="h-4 w-4 text-purple-400 hover:text-purple-300 transition-colors drop-shadow-lg" />
                 </Button>
 
                 {showBusInbox && (
@@ -1681,10 +1681,10 @@ Teacher ID: ${teacherId}`);
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 hover:bg-gradient-to-r hover:from-blue-600/10 hover:to-purple-600/10 transition-all"
+                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 hover:from-indigo-600/40 hover:to-purple-600/40 border-indigo-500/40 hover:border-indigo-400/60 transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
               >
-                <LogOut className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500 hover:text-purple-600 transition-colors" />
-                <span className="hidden sm:inline">Logout</span>
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4 text-indigo-400 hover:text-purple-300 transition-colors drop-shadow-lg" />
+                <span className="hidden sm:inline text-indigo-300">Logout</span>
               </Button>
             </div>
           </div>
