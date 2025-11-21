@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 /* ============================================= */
-/* GLOBAL SETTINGS & OPTIMIZATIONS */
+/* GLOBAL SETTINGS */
 /* ============================================= */
 
 html {
@@ -15,385 +15,269 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-/* Custom Text Selection Color */
+/* Selection: Gold background, Deep Blue text */
 ::selection {
-  background: hsl(45, 93%, 47%);
-  color: #000;
+  background: rgba(212, 175, 55, 0.3);
+  color: #0a2540;
 }
 
 body {
+  /* Apple-style smooth rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transform: translateZ(0);
-  backface-visibility: hidden;
 }
 
 /* ============================================= */
-/* COLOR PALETTE & VARIABLES */
+/* COLOR PALETTE (LIGHT ROYAL THEME) */
 /* ============================================= */
 
 @layer base {
   :root {
-    /* --- MODERN ROYAL PALETTE --- */
+    /* --- BACKGROUNDS --- */
+    /* Pure White with a hint of blue for depth */
+    --background: 210 40% 98%; 
+    --background-rgb: 248, 250, 252;
     
-    /* Background: Deep Midnight Blue (Rich & Dark) */
-    --background: 224 71% 4%;
-    --background-rgb: 3, 13, 31; 
-    
-    /* Foreground: Soft White */
-    --foreground: 210 40% 98%;
+    /* --- TYPOGRAPHY COLORS --- */
+    /* Deep Royal Navy (The Main Text Color) */
+    --foreground: 222 47% 11%; /* #0f172a */
+    --foreground-rgb: 15, 23, 42;
 
-    /* Card: Slightly lighter midnight */
-    --card: 224 71% 7%;
-    --card-foreground: 210 40% 98%;
+    /* Headings: Rich Electric Blue */
+    --heading-color: 217 91% 30%; /* #0747a6 */
 
-    /* Primary: Electric Royal Blue/Indigo */
-    --primary: 252 85% 65%;
-    --primary-foreground: 210 40% 98%;
+    /* --- ACCENTS --- */
+    /* Primary: Bright Royal Blue */
+    --primary: 221 83% 53%; /* #3b82f6 */
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Metallic Gold (Less Yellow, More Amber) */
-    --gold: 45 93% 47%;
-    --gold-light: 48 90% 70%;
-    
-    /* Accents */
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    
-    /* Semantic Colors */
-    --success: 142 71% 45%;
-    --destructive: 0 84% 60%;
-    
-    /* --- GRADIENTS & EFFECTS --- */
-    
-    /* Sky Blue, Deep Blue & Light Blue Mix with Shadow */
-    --gradient-hero: radial-gradient(circle at 20% 0%, rgba(135, 206, 250, 0.25), transparent 40%),
-                     radial-gradient(circle at 80% 20%, rgba(30, 144, 255, 0.2), transparent 50%),
-                     radial-gradient(circle at 50% 50%, rgba(100, 180, 255, 0.1), transparent 60%),
-                     linear-gradient(135deg, #1a3a52 0%, #2d5a8f 40%, #4a7ba7 70%, #1a3a52 100%);
+    /* Secondary: Luxury Gold (Darker for visibility on white) */
+    --gold: 43 74% 49%; /* #da9f10 */
+    --gold-light: 45 93% 47%; 
+    --gold-text: 35 70% 40%; /* Darker gold for text reading */
 
-    /* Metallic Gold Gradient for Text/Buttons */
-    --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FDB931 50%, #d4af37 100%);
-    
-    /* Royal Gradient */
-    --gradient-royal: linear-gradient(135deg, hsl(252 85% 65%), hsl(224 71% 40%));
-    
-    /* Card Glass Gradient */
-    --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-
-    /* Shadows with colored glow - Deep blue and sky blue shadows */
-    --shadow-royal: 0 20px 40px -12px rgba(30, 144, 255, 0.45);
-    --shadow-gold: 0 10px 30px -10px rgba(135, 206, 250, 0.35);
-    --shadow-3d: 0 25px 60px -12px rgba(10, 40, 80, 0.7);
-    
-    /* Typography */
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Inter', sans-serif;
-    
-    --radius: 1rem;
-  }
-
-  .light {
-    /* Elegant Light Mode */
-    --background: 210 40% 98%;
-    --background-rgb: 250, 250, 252;
-    --foreground: 224 71% 4%;
+    /* --- UI ELEMENTS --- */
     --card: 0 0% 100%;
-    --card-foreground: 224 71% 4%;
-    --border: 220 13% 91%;
-    --primary: 252 85% 60%;
-    --gold: 45 93% 40%; /* Darker gold for light mode readability */
-    --gradient-hero: linear-gradient(to bottom, #ffffff, #f3f4f6);
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    
+    /* --- GRADIENTS (The "Light Effect") --- */
+    
+    /* Subtle White/Blue Aurora Background */
+    --gradient-hero: 
+        radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.08), transparent 25%), /* Gold Glow */
+        radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%), /* Blue Glow */
+        linear-gradient(180deg, #ffffff 0%, #f0f4f8 100%); /* Clean White Fade */
+
+    /* Royal Text Gradient (Deep Blue to Bright Blue) */
+    --gradient-royal-text: linear-gradient(135deg, #0a2540 0%, #2563eb 100%);
+    
+    /* Gold Text Gradient */
+    --gradient-gold-text: linear-gradient(135deg, #b48811 0%, #eab308 50%, #b48811 100%);
+
+    /* iPhone Glass Gradient */
+    --gradient-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.45) 100%);
+
+    /* Shadows (Soft, colored shadows like Apple) */
+    --shadow-soft: 0 20px 40px -10px rgba(37, 99, 235, 0.1);
+    --shadow-gold: 0 15px 30px -5px rgba(234, 179, 8, 0.15);
+    
+    --radius: 1.25rem; /* More rounded like iOS */
   }
 }
 
 @layer base {
-  * {
-    border-color: hsl(var(--border));
-  }
-
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: var(--font-body);
     background-image: var(--gradient-hero);
     background-attachment: fixed;
-    background-size: cover;
-    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
   }
 
-  /* Elegant Headings */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
+    font-family: 'Playfair Display', serif;
     font-weight: 700;
-    letter-spacing: -0.02em; /* Tighter tracking for modern feel */
-    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: #0a2540; /* Deep Navy Fallback */
   }
   
   h1 {
-    background: linear-gradient(to bottom, #fff, #cbd5e1);
+    /* Gradient Text Effect on White */
+    background: var(--gradient-royal-text);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    /* Fallback */
-    color: white; 
+    /* Drop shadow to make it pop off the white */
+    filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.1));
   }
 }
 
 /* ============================================= */
-/* COMPONENT CLASSES */
+/* COMPONENT CLASSES (IPHONE / GLASS UI) */
 /* ============================================= */
 
 @layer components {
-  
-  /* --- 3D Glass Card --- */
-  .card-3d {
+
+  /* --- Apple Style Frosted Glass Card --- */
+  .card-glass {
     position: relative;
-    background: rgba(10, 40, 80, 0.5);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(135, 206, 250, 0.15);
-    box-shadow: 0 8px 32px rgba(30, 144, 255, 0.15), inset 0 0 20px rgba(135, 206, 250, 0.05);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
+    /* High transparency white */
+    background: rgba(255, 255, 255, 0.65); 
+    /* The Blur is key for iPhone feel */
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    /* Subtle white border */
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    /* Soft colored shadow */
+    box-shadow: var(--shadow-soft), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     overflow: hidden;
   }
 
-  .card-3d::before {
+  /* Light reflection effect on hover */
+  .card-glass::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(135, 206, 250, 0.3), transparent);
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%);
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.5s;
+    pointer-events: none;
   }
 
-  .card-3d:hover {
-    transform: translateY(-8px);
-    border-color: rgba(135, 206, 250, 0.4);
-    box-shadow: 0 12px 40px rgba(30, 144, 255, 0.25), inset 0 0 20px rgba(135, 206, 250, 0.08);
+  .card-glass:hover {
+    transform: translateY(-6px) scale(1.01);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 30px 60px -12px rgba(37, 99, 235, 0.15);
+    border-color: #fff;
   }
   
-  .card-3d:hover::before {
+  .card-glass:hover::before {
     opacity: 1;
   }
 
-  /* --- Royal Text Gradient (The "Gold" Effect) --- */
-  .text-gold-gradient {
-    background: linear-gradient(135deg, #00bfff 0%, #1e90ff 50%, #00ced1 100%);
+  /* --- Text Gradients --- */
+  .text-royal {
+    background: var(--gradient-royal-text);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     font-weight: 700;
   }
 
-  /* --- Sky Blue Text Gradient --- */
-  .text-sky-gradient {
-    background: linear-gradient(135deg, #87ceeb 0%, #1e90ff 50%, #4682b4 100%);
+  .text-gold {
+    background: var(--gradient-gold-text);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     font-weight: 700;
+    /* Add slight shadow for readability on white */
+    filter: drop-shadow(0 1px 1px rgba(218, 165, 32, 0.2));
   }
 
-  /* --- Buttons --- */
+  /* --- Buttons (Glossy Jewels) --- */
   .btn-royal {
-    background: var(--gradient-royal);
-    box-shadow: 0 4px 15px rgba(88, 28, 135, 0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    font-weight: 500;
+    border-radius: 9999px; /* Pill shape (Apple style) */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39);
+    transition: all 0.2s ease-out;
     position: relative;
     overflow: hidden;
-    z-index: 1;
   }
   
+  /* Glossy top shine */
   .btn-royal::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(255,255,255,0.1), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: -1;
+    top: 0; left: 0; width: 100%; height: 50%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+    pointer-events: none;
   }
 
   .btn-royal:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(88, 28, 135, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    filter: brightness(1.05);
   }
 
   .btn-gold {
-    background: var(--gradient-gold);
-    color: #1a1a1a;
+    background: linear-gradient(135deg, #FFF7D6 0%, #FFE492 100%);
+    color: #855a00; /* Dark gold text */
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(253, 185, 49, 0.4);
-    transition: all 0.3s ease;
+    border-radius: 9999px;
+    border: 1px solid #fff;
+    box-shadow: 0 4px 14px 0 rgba(234, 179, 8, 0.3);
+    transition: all 0.2s ease-out;
   }
 
   .btn-gold:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(253, 185, 49, 0.6);
-    filter: brightness(1.1);
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, #fffbe6 0%, #ffebad 100%);
+    box-shadow: 0 6px 20px rgba(234, 179, 8, 0.4);
   }
 
   /* --- Navigation Glass --- */
   .header-glass {
-    background: rgba(15, 50, 90, 0.75);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid rgba(135, 206, 250, 0.2);
-    box-shadow: 0 8px 32px rgba(30, 144, 255, 0.1);
-  }
-  
-  .container-wide {
-    max-width: 85rem;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
 }
 
 /* ============================================= */
-/* ANIMATIONS */
+/* LIGHT & GLOW ANIMATIONS */
 /* ============================================= */
 
-.animate-float { animation: float 6s ease-in-out infinite; }
-.animate-glow { animation: glow 3s ease-in-out infinite alternate; }
-.animate-pulse-slow { animation: pulseGlow 4s ease-in-out infinite; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+/* Floating light orbs in background */
+.orb-glow-blue {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  filter: blur(40px);
+  z-index: -1;
+  animation: float-slow 10s infinite alternate;
 }
 
-@keyframes glow {
-  0% { box-shadow: 0 0 10px rgba(253, 185, 49, 0.2); }
-  100% { box-shadow: 0 0 25px rgba(253, 185, 49, 0.6), 0 0 10px rgba(253, 185, 49, 0.4); }
+.orb-glow-gold {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(234, 179, 8, 0.1) 0%, transparent 70%);
+  filter: blur(40px);
+  z-index: -1;
+  animation: float-slow 8s infinite alternate-reverse;
 }
 
-@keyframes pulseGlow {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; filter: brightness(1.2); }
+@keyframes float-slow {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(20px, -20px); }
 }
 
 /* ============================================= */
-/* UTILITIES & SCROLLBARS */
+/* SCROLLBAR (Minimalist Apple Style) */
 /* ============================================= */
 
-/* Attractive Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #87CEFA, #1E90FF);
-  border-radius: 10px;
-  border: 2px solid rgba(15, 50, 90, 1);
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 20px;
+  border: 3px solid transparent;
+  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1E90FF;
-}
-
-/* Glass Utilities */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Neon Compass Styles (Kept from original but refined) */
-.neon-compass {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  background: radial-gradient(circle at 30% 30%, rgba(110, 231, 183, 0.08), rgba(59, 130, 246, 0.03));
-  box-shadow: inset 0 0 15px rgba(110, 231, 183, 0.1), 0 0 20px rgba(59, 130, 246, 0.2);
-}
-
-@media (max-width: 640px) {
-  .neon-compass {
-    box-shadow: inset 0 0 12px rgba(110, 231, 183, 0.08), 0 0 15px rgba(59, 130, 246, 0.15);
-  }
-}
-
-.compass-ring {
-  position: absolute;
-  inset: 0;
-  border: 2px solid;
-  border-image: linear-gradient(135deg, #6ee7b7, #3b82f6) 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(20, 20, 40, 0.9), rgba(10, 10, 30, 0.95));
-  box-shadow: inset 0 0 20px rgba(110, 231, 183, 0.1), 0 0 30px rgba(59, 130, 246, 0.15);
-}
-
-.needle-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform-origin: 50% 50%;
-  transition: transform 0s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.neon-needle {
-  filter: drop-shadow(0 0 8px #6ee7b7) drop-shadow(0 0 4px #3b82f6);
-  animation: needle-glow 2s ease-in-out infinite;
-}
-
-@keyframes needle-glow {
-  0%, 100% {
-    filter: drop-shadow(0 0 8px #6ee7b7) drop-shadow(0 0 4px #3b82f6);
-  }
-  50% {
-    filter: drop-shadow(0 0 12px #6ee7b7) drop-shadow(0 0 8px #3b82f6);
-  }
-}
-
-.neon-center {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #6ee7b7, #3b82f6);
-  box-shadow: 0 0 20px rgba(110, 231, 183, 0.8), 0 0 40px rgba(59, 130, 246, 0.6),
-    inset 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-.neon-compass svg {
-  width: 100%;
-  height: 100%;
-}
-
-/* ============================================= */
-/* MOBILE OPTIMIZATIONS */
-/* ============================================= */
-
-@media (max-width: 768px) {
-  :root {
-    --radius: 0.75rem;
-  }
-  
-  /* Better font sizing for mobile reading */
-  p, span, div {
-    line-height: 1.6;
-  }
-  
-  .card-3d:hover {
-    transform: none; /* Disable hover lift on touch */
-  }
-  
-  /* Simplify background for performance */
-  body {
-    background-image: linear-gradient(to bottom, hsl(224 71% 4%), hsl(224 60% 8%));
-  }
+  background-color: rgba(156, 163, 175, 0.8);
 }

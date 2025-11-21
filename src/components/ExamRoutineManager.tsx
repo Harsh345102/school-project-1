@@ -348,7 +348,7 @@ const ExamRoutineManager = () => {
             onClick={handlePrevMonth}
             className="h-8 w-8 sm:h-9 sm:w-9 p-0"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4 text-black dark:text-white" />
           </Button>
           
           <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 text-center flex-1 truncate">
@@ -361,7 +361,7 @@ const ExamRoutineManager = () => {
             onClick={handleNextMonth}
             className="h-8 w-8 sm:h-9 sm:w-9 p-0"
           >
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 text-black dark:text-white" />
           </Button>
         </div>
 

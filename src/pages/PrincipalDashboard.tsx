@@ -226,6 +226,8 @@ const PrincipalDashboard = () => {
 
   const [admissions, setAdmissions] = useState<AdmissionRecord[]>([]);
   const [admissionsSearch, setAdmissionsSearch] = useState("");
+  const [contentManagementSearch, setContentManagementSearch] = useState("");
+  const [quickActionsSearch, setQuickActionsSearch] = useState("");
   const [admissionStatus, setAdmissionStatus] = useState(true); // true = ON, false = OFF
   const [contactForms, setContactForms] = useState<any[]>([]);
   const [contactFormsSearch, setContactFormsSearch] = useState("");
@@ -1286,21 +1288,21 @@ Teacher ID: ${teacherId}`);
   const selectedStudentFees = selectedLookupStudent ? getStudentFeeSummary(selectedLookupStudent) : { fees: [], pending: [], dueAmount: 0 };
 
   const quickActions = [
-    { icon: Bell, label: "Send Announcement", color: "from-red-500 to-red-600", action: () => setActiveSection("announcements") },
-    { icon: Volume2, label: "Audio Messages", color: "from-blue-500 to-blue-600", action: () => setActiveSection("audiomessages") },
-    { icon: MessageSquare, label: "Notify Students", color: "from-purple-500 to-purple-600", action: () => setShowStudentNotificationModal(true) },
-    { icon: Star, label: "Principal Remarks", color: "from-yellow-500 to-yellow-600", action: () => setShowPrincipalRemarksModal(true) },
-    { icon: Search, label: "Student Lookup", color: "from-sky-500 to-sky-600", action: () => setShowStudentLookupModal(true) },
-    { icon: Mail, label: "See Contact Form", color: "from-green-500 to-green-600", action: () => setActiveSection("contactforms") },
-    { icon: BookOpen, label: "Yearly Books", color: "from-orange-500 to-orange-600", action: () => setActiveSection("booksmanager") },
-    { icon: Calendar, label: "Exam Routine", color: "from-cyan-500 to-cyan-600", action: () => setActiveSection("examroutine") },
-    { icon: Settings, label: "Branding & Logo", color: "from-pink-500 to-pink-600", action: () => setActiveSection("branding") },
-    { icon: Clock, label: "Manage Timetable", color: "from-indigo-500 to-indigo-600", action: () => setActiveSection("timetable") },
-    { icon: GraduationCap, label: "Edit Admissions Page", color: "from-teal-500 to-teal-600", action: () => setActiveSection("admissionsmanager") },
-    { icon: Trophy, label: "Top Scorers Content", color: "from-amber-500 to-amber-600", action: () => setActiveSection("topscorerslearnmore") },
+    { icon: Bell, label: "Send Announcement", color: "from-blue-600 to-purple-600", action: () => setActiveSection("announcements") },
+    { icon: Volume2, label: "Audio Messages", color: "from-sky-400 to-purple-600", action: () => setActiveSection("audiomessages") },
+    { icon: MessageSquare, label: "Notify Students", color: "from-blue-600 to-purple-600", action: () => setShowStudentNotificationModal(true) },
+    { icon: Star, label: "Principal Remarks", color: "from-sky-400 to-purple-600", action: () => setShowPrincipalRemarksModal(true) },
+    { icon: Search, label: "Student Lookup", color: "from-blue-600 to-purple-600", action: () => setShowStudentLookupModal(true) },
+    { icon: Mail, label: "See Contact Form", color: "from-sky-400 to-purple-600", action: () => setActiveSection("contactforms") },
+    { icon: BookOpen, label: "Yearly Books", color: "from-blue-600 to-purple-600", action: () => setActiveSection("booksmanager") },
+    { icon: Calendar, label: "Exam Routine", color: "from-sky-400 to-purple-600", action: () => setActiveSection("examroutine") },
+    { icon: Settings, label: "Branding & Logo", color: "from-blue-600 to-purple-600", action: () => setActiveSection("branding") },
+    { icon: Clock, label: "Manage Timetable", color: "from-sky-400 to-purple-600", action: () => setActiveSection("timetable") },
+    { icon: GraduationCap, label: "Edit Admissions Page", color: "from-blue-600 to-purple-600", action: () => setActiveSection("admissionsmanager") },
+    { icon: Trophy, label: "Top Scorers Content", color: "from-sky-400 to-purple-600", action: () => setActiveSection("topscorerslearnmore") },
     // New quick actions for Bus Tracking IDs
-    { icon: IdCard, label: "Create Bus ID", color: "from-lime-500 to-lime-600", action: () => navigate('/create-bus-id') },
-    { icon: IdCard, label: "Manage Bus IDs", color: "from-emerald-500 to-emerald-600", action: () => navigate('/manage-bus-id') }
+    { icon: IdCard, label: "Create Bus ID", color: "from-blue-600 to-purple-600", action: () => navigate('/create-bus-id') },
+    { icon: IdCard, label: "Manage Bus IDs", color: "from-sky-400 to-purple-600", action: () => navigate('/manage-bus-id') }
   ];
 
   // Precompute filtered teachers list for Manage Teachers
@@ -1387,9 +1389,9 @@ Teacher ID: ${teacherId}`);
                   variant="outline"
                   size="sm"
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative p-2"
+                  className="relative p-2 hover:bg-gradient-to-r hover:from-sky-500/10 hover:to-purple-600/10 transition-all"
                 >
-                  <Bell className="h-4 w-4" />
+                  <Bell className="h-4 w-4 text-sky-500 hover:text-purple-600 transition-colors" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                       {unreadCount > 9 ? '9+' : unreadCount}
@@ -1570,9 +1572,9 @@ Teacher ID: ${teacherId}`);
                   variant="outline"
                   size="sm"
                   onClick={() => setShowBusInbox(!showBusInbox)}
-                  className="relative p-2"
+                  className="relative p-2 hover:bg-gradient-to-r hover:from-purple-600/10 hover:to-sky-500/10 transition-all"
                 >
-                  <Bus className="h-4 w-4" />
+                  <Bus className="h-4 w-4 text-purple-500 hover:text-sky-600 transition-colors" />
                 </Button>
 
                 {showBusInbox && (
@@ -1679,9 +1681,9 @@ Teacher ID: ${teacherId}`);
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3"
+                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 hover:bg-gradient-to-r hover:from-blue-600/10 hover:to-purple-600/10 transition-all"
               >
-                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500 hover:text-purple-600 transition-colors" />
                 <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
@@ -1731,11 +1733,27 @@ Teacher ID: ${teacherId}`);
                   className="lg:col-span-2"
                 >
                   <div className="bg-card/95 backdrop-blur-md rounded-lg sm:rounded-xl p-4 sm:p-6 border border-border/50 will-change-auto">
-                    <h2 className="text-base sm:text-lg font-heading font-bold text-foreground mb-4 sm:mb-6">
-                      Quick Actions
-                    </h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                      <h2 className="text-base sm:text-lg font-heading font-bold text-foreground flex-1">
+                        Quick Actions
+                      </h2>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Search actions..."
+                          value={quickActionsSearch}
+                          onChange={(e) => setQuickActionsSearch(e.target.value)}
+                          className="pl-10 pr-3 py-2 text-sm bg-background/50 border border-border/50 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-background transition-all"
+                        />
+                      </div>
+                    </div>
                     <div className="grid grid-cols-2 gap-1 sm:gap-2 lg:grid-cols-3 lg:gap-3">
-                      {quickActions.map((action, index) => (
+                      {quickActions
+                        .filter(action => 
+                          action.label.toLowerCase().includes(quickActionsSearch.toLowerCase())
+                        )
+                        .map((action, index) => (
                       <motion.button
                         key={action.label}
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -1744,12 +1762,12 @@ Teacher ID: ${teacherId}`);
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={action.action}
-                        className="relative p-2 sm:p-3 lg:p-4 rounded-xl transition-all duration-200 text-white group touch-manipulation overflow-hidden will-change-transform"
+                        className="relative p-2 sm:p-3 lg:p-4 rounded-2xl transition-all duration-200 text-white group touch-manipulation overflow-hidden will-change-transform"
                       >
-                        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-70 blur-xl transition duration-300 pointer-events-none" />
-                        <div className={`relative bg-gradient-to-r ${action.color} p-2 sm:p-3 lg:p-4 rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.15)] group-hover:shadow-[0_0_25px_rgba(255,255,255,0.35)] border border-white/10`}>
-                            <action.icon className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white mb-1 sm:mb-2 lg:mb-3 mx-auto" />
-                            <p className="text-[10px] sm:text-xs lg:text-sm font-medium text-white text-center leading-tight px-1">
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/25 via-transparent to-transparent opacity-0 group-hover:opacity-80 blur-xl transition duration-300 pointer-events-none" />
+                        <div className={`relative bg-gradient-to-r ${action.color} p-3 sm:p-4 lg:p-5 rounded-2xl shadow-[0_8px_32px_rgba(88,28,135,0.3)] hover:shadow-[0_12px_48px_rgba(88,28,135,0.5)] border border-white/20 group-hover:border-white/40 transition-all duration-300`}>
+                            <action.icon className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7 text-white mb-2 sm:mb-2 lg:mb-3 mx-auto" />
+                            <p className="text-[11px] sm:text-sm lg:text-base font-semibold text-white text-center leading-tight px-1">
                               {action.label === "Audio Messages" ? (
                                 <>
                                   <span className="sm:hidden">Audio</span>
@@ -1814,9 +1832,18 @@ Teacher ID: ${teacherId}`);
                 className="mt-6 sm:mt-8"
               >
                 <div className="bg-card/95 backdrop-blur-md rounded-lg sm:rounded-xl p-4 sm:p-6 border border-border/50">
-                  <h2 className="text-base sm:text-lg font-heading font-bold text-foreground mb-4 sm:mb-6">
-                    Content Management
-                  </h2>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <h2 className="text-base sm:text-lg font-heading font-bold text-foreground">
+                      Content Management
+                    </h2>
+                    <input
+                      type="text"
+                      placeholder="Search features..."
+                      value={contentManagementSearch}
+                      onChange={(e) => setContentManagementSearch(e.target.value)}
+                      className="w-full sm:w-64 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm bg-background border border-border/50 rounded-lg focus:outline-none focus:border-sky-400/50 focus:ring-1 focus:ring-sky-400/30 transition-all"
+                    />
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-3 sm:gap-4">
                     {[
                       { title: "Edit Homepage", desc: "Update main page content", icon: Edit, action: () => setActiveSection("homepage") },
@@ -1836,7 +1863,13 @@ Teacher ID: ${teacherId}`);
                       { title: "Create New Teacher ID", desc: "Generate teacher login credentials", icon: UserPlus, action: () => setActiveSection("createteacherid") },
                       { title: "Manage Teacher IDs", desc: "View and manage teacher login credentials", icon: IdCard, action: () => setActiveSection("manageteacherid") },
                       { title: "Price Management", desc: "Update admission fees and pricing", icon: DollarSign, action: () => setActiveSection("pricemanagement") }
-                    ].map((item, index) => (
+                    ].filter(item => {
+                      if (!contentManagementSearch.trim()) return true;
+                      const searchLower = contentManagementSearch.toLowerCase();
+                      const titleLower = item.title.toLowerCase();
+                      const descLower = item.desc.toLowerCase();
+                      return titleLower.includes(searchLower) || descLower.includes(searchLower);
+                    }).map((item, index) => (
                       <motion.div
                         key={item.title}
                         initial={{ opacity: 0, y: 10 }}
