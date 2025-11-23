@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Volume2, Play, Pause, ArrowLeft, Trash2, Users, Calendar, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getSupabaseData, setSupabaseData } from "@/lib/supabaseHelpers";
+import { getSupabaseData, setSupabaseData, subscribeToSupabaseChanges } from "@/lib/supabaseHelpers";
 import { supabase } from "@/lib/supabaseClient";
 
 interface AudioMessage {
@@ -33,28 +33,6 @@ interface PrincipalAudioMessagesProps {
 }
 
 const PrincipalAudioMessages = ({ userEmail, userType, userClass, userSection, userId }: PrincipalAudioMessagesProps) => {
-    // Delete audio message by id from Supabase
-    const handleDeleteAudioMessage = async (id: string) => {
-      if (!window.confirm("Are you sure you want to delete this audio message?")) return;
-      try {
-        // Delete from Supabase directly
-        const allMessages = await getSupabaseData<AudioMessage[]>('royal-academy-audio-messages', []);
-        const updated = allMessages.filter(msg => msg.id !== id);
-        
-        const saved = await setSupabaseData('royal-academy-audio-messages', updated);
-        
-        if (!saved) {
-          alert("Failed to delete audio message");
-          return;
-        }
-        
-        // Reload messages to ensure consistency
-        const reloadedMessages = await getSupabaseData<AudioMessage[]>('royal-academy-audio-messages', []);
-        filterMessagesForUser(reloadedMessages);
-      } catch (err) {
-        alert("Failed to delete audio message: " + (err instanceof Error ? err.message : String(err)));
-      }
-    };
   const [messages, setMessages] = useState<AudioMessage[]>([]);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [playingMessageId, setPlayingMessageId] = useState<string | null>(null);
@@ -62,8 +40,49 @@ const PrincipalAudioMessages = ({ userEmail, userType, userClass, userSection, u
   const [volume, setVolume] = useState<number>(1); // State for volume
   const navigate = useNavigate();
 
+    // Delete audio message by id from Supabase
+    const handleDeleteAudioMessage = async (id: string) => {
+      if (!window.confirm("Are you sure you want to delete this audio message?")) return;
+      try {
+        // Optimistically remove from UI first
+        setMessages(prev => prev.filter(msg => msg.id !== id));
+        
+        // Then delete from Supabase
+        const allMessages = await getSupabaseData<AudioMessage[]>('royal-academy-audio-messages', []);
+        const updated = allMessages.filter(msg => msg.id !== id);
+        
+        const saved = await setSupabaseData('royal-academy-audio-messages', updated);
+        
+        if (!saved) {
+          alert("Failed to delete audio message");
+          // Reload if failed
+          loadMessages();
+          return;
+        }
+        
+        alert("Audio message deleted successfully!");
+      } catch (err) {
+        alert("Failed to delete audio message: " + (err instanceof Error ? err.message : String(err)));
+        // Reload if error
+        loadMessages();
+      }
+    };
+
   useEffect(() => {
     loadMessages();
+
+    // Real-time listener for receiving new messages
+    const unsubscribe = subscribeToSupabaseChanges<AudioMessage[]>(
+      'royal-academy-audio-messages',
+      (newData) => {
+        console.log('[PrincipalAudioMessages] Received new audio message, updating UI');
+        filterMessagesForUser(newData);
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
   }, [userEmail, userType, userClass, userSection, userId]);
 
   const loadMessages = async () => {
@@ -349,18 +368,6 @@ const PrincipalAudioMessages = ({ userEmail, userType, userClass, userSection, u
                           </>
                         )}
                       </Button>
-                      {/* Show delete button only for principal (senderType === 'principal') */}
-                      {message.senderType === 'principal' && (
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          title="Delete Audio Message"
-                          onClick={() => handleDeleteAudioMessage(message.id)}
-                          className="h-9 sm:h-10"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
                     </div>
                   </div>
                 </motion.div>

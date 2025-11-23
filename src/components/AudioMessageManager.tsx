@@ -4,7 +4,7 @@ import { Volume2, Mic, Upload, Trash2, Play, Pause, Send, X, Users, UserCheck, V
 import { Button } from "@/components/ui/button-variants";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { getSupabaseData, setSupabaseData } from "@/lib/supabaseHelpers";
+import { getSupabaseData, setSupabaseData, subscribeToSupabaseChanges } from "@/lib/supabaseHelpers";
 
 interface AudioMessage {
   id: string;
@@ -54,6 +54,20 @@ const AudioMessageManager = ({ principalEmail }: { principalEmail: string }) => 
   useEffect(() => {
     loadMessages();
     loadStudentsAndTeachers();
+
+    // Real-time listener for receiving new messages
+    const unsubMessages = subscribeToSupabaseChanges<AudioMessage[]>(
+      'royal-academy-audio-messages',
+      (newData) => {
+        console.log('[AudioMessageManager] Received new audio message, updating UI');
+        const myMessages = newData.filter(m => m.senderId === principalEmail);
+        setMessages(myMessages);
+      }
+    );
+
+    return () => {
+      unsubMessages();
+    };
   }, [principalEmail]);
 
   const loadMessages = async () => {
@@ -175,11 +189,12 @@ const AudioMessageManager = ({ principalEmail }: { principalEmail: string }) => 
             alert('Failed to send audio message');
             return;
           }
-          // Only update UI after successful save
+          // Optimistically update UI immediately
           setMessages(prev => [...prev, newMessage]);
           resetForm();
           setShowCreateModal(false);
           alert('Audio message sent successfully!');
+          // Real-time listener will sync any changes from other sources
         } catch (error) {
           console.error('[AudioMessageManager] Error saving message:', error);
           alert('Failed to send audio message');
@@ -196,7 +211,10 @@ const AudioMessageManager = ({ principalEmail }: { principalEmail: string }) => 
     if (!confirm('Are you sure you want to delete this audio message?')) return;
 
     try {
-      // Delete from Supabase directly
+      // Optimistically remove from UI first
+      setMessages(prev => prev.filter(m => m.id !== messageId));
+      
+      // Then delete from Supabase
       const allMessages = await getSupabaseData<AudioMessage[]>('royal-academy-audio-messages', []);
       const updated = allMessages.filter(m => m.id !== messageId);
       console.log('[AudioMessageManager] Deleting audio message from Supabase, syncing across ports');
@@ -204,15 +222,17 @@ const AudioMessageManager = ({ principalEmail }: { principalEmail: string }) => 
       
       if (!saved) {
         console.error('[AudioMessageManager] Error deleting message');
+        // Reload if delete failed
+        await loadMessages();
         alert('Failed to delete audio message');
         return;
       }
       
-      // Reload messages from Supabase to ensure consistency
-      await loadMessages();
       alert('Audio message deleted successfully!');
     } catch (error) {
       console.error('[AudioMessageManager] Error deleting message:', error);
+      // Reload if error occurs
+      await loadMessages();
       alert('Failed to delete audio message');
     }
   };
