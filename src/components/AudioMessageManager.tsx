@@ -4,7 +4,7 @@ import { Volume2, Mic, Upload, Trash2, Play, Pause, Send, X, Users, UserCheck, V
 import { Button } from "@/components/ui/button-variants";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { getSupabaseData, setSupabaseData, subscribeToSupabaseChanges } from "@/lib/supabaseHelpers";
+import { getSupabaseData, setSupabaseData } from "@/lib/supabaseHelpers";
 
 interface AudioMessage {
   id: string;
@@ -54,20 +54,6 @@ const AudioMessageManager = ({ principalEmail }: { principalEmail: string }) => 
   useEffect(() => {
     loadMessages();
     loadStudentsAndTeachers();
-
-    // Real-time subscription ensures audio messages sync across all ports (5000, 5001, etc.)
-    const unsubMessages = subscribeToSupabaseChanges<AudioMessage[]>(
-      'royal-academy-audio-messages',
-      (newData) => {
-        console.log('[AudioMessageManager] Received realtime update from Supabase, syncing across ports');
-        const myMessages = newData.filter(m => m.senderId === principalEmail);
-        setMessages(myMessages);
-      }
-    );
-
-    return () => {
-      unsubMessages();
-    };
   }, [principalEmail]);
 
   const loadMessages = async () => {
@@ -179,20 +165,26 @@ const AudioMessageManager = ({ principalEmail }: { principalEmail: string }) => 
           createdAt: new Date().toISOString()
         };
 
-        console.log('[AudioMessageManager] Creating new message:', newMessage);
-        const allMessages = await getSupabaseData<AudioMessage[]>('royal-academy-audio-messages', []);
-        console.log('[AudioMessageManager] Current messages before save:', allMessages.length);
-        // Save to Supabase - this will sync across all ports (5000, 5001, etc.)
-        console.log('[AudioMessageManager] Saving audio message to Supabase for cross-port sync');
-        await setSupabaseData('royal-academy-audio-messages', [...allMessages, newMessage]);
-        console.log('[AudioMessageManager] Message saved successfully');
-
-        setMessages(prev => [...prev, newMessage]);
-        resetForm();
-        setShowCreateModal(false);
-        alert('Audio message sent successfully!');
+        // Save to Supabase directly
+        try {
+          const allMessages = await getSupabaseData<AudioMessage[]>('royal-academy-audio-messages', []);
+          const updated = [...allMessages, newMessage];
+          const saved = await setSupabaseData('royal-academy-audio-messages', updated);
+          if (!saved) {
+            console.error('[AudioMessageManager] Error saving message');
+            alert('Failed to send audio message');
+            return;
+          }
+          // Only update UI after successful save
+          setMessages(prev => [...prev, newMessage]);
+          resetForm();
+          setShowCreateModal(false);
+          alert('Audio message sent successfully!');
+        } catch (error) {
+          console.error('[AudioMessageManager] Error saving message:', error);
+          alert('Failed to send audio message');
+        }
       };
-
       reader.readAsDataURL(audioBlob);
     } catch (error) {
       console.error('[AudioMessageManager] Error sending message:', error);
@@ -204,12 +196,20 @@ const AudioMessageManager = ({ principalEmail }: { principalEmail: string }) => 
     if (!confirm('Are you sure you want to delete this audio message?')) return;
 
     try {
+      // Delete from Supabase directly
       const allMessages = await getSupabaseData<AudioMessage[]>('royal-academy-audio-messages', []);
       const updated = allMessages.filter(m => m.id !== messageId);
-      // Delete from Supabase - this will sync deletion across all ports
       console.log('[AudioMessageManager] Deleting audio message from Supabase, syncing across ports');
-      await setSupabaseData('royal-academy-audio-messages', updated);
-      setMessages(prev => prev.filter(m => m.id !== messageId));
+      const saved = await setSupabaseData('royal-academy-audio-messages', updated);
+      
+      if (!saved) {
+        console.error('[AudioMessageManager] Error deleting message');
+        alert('Failed to delete audio message');
+        return;
+      }
+      
+      // Reload messages from Supabase to ensure consistency
+      await loadMessages();
       alert('Audio message deleted successfully!');
     } catch (error) {
       console.error('[AudioMessageManager] Error deleting message:', error);
