@@ -863,10 +863,10 @@ const StudentDashboard = () => {
                 </div>
               </div>
               <div className="min-w-0 flex-1">
-                <h1 className="text-lg sm:text-2xl font-heading font-bold bg-gradient-to-r from-gold via-yellow-300 to-gold bg-clip-text text-transparent truncate drop-shadow-lg">
+                <h1 className="text-lg sm:text-2xl font-heading font-bold text-white truncate drop-shadow-lg">
                   {studentData?.fullName || "Student"}
                 </h1>
-                <p className="text-[10px] sm:text-sm bg-gradient-to-r from-gold/60 to-cyan-400/60 bg-clip-text text-transparent hidden sm:block">
+                <p className="text-[10px] sm:text-sm text-white/80 hidden sm:block">
                   Welcome back, {studentData?.fullName || "Student"}
                 </p>
               </div>

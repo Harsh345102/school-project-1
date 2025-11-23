@@ -12,7 +12,6 @@
   animation-delay: 0s !important;
   transition-duration: 0s !important;
   transition-delay: 0s !important;
-  transform: none !important;
 }
 
 .performance-mode .motion-reduce {
@@ -50,6 +49,19 @@
 .performance-mode .animate-spin,
 .performance-mode .animate-bounce {
   animation: none !important;
+}
+
+/* Ensure heavy backgrounds and 3D effects are neutralized when performance mode is active */
+.performance-mode body {
+  /* prevent fixed backgrounds which cause jank on mobile */
+  background-attachment: scroll !important;
+  -webkit-background-attachment: scroll !important;
+}
+
+.performance-mode .card-3d {
+  transform: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
 }
 
 /* Mobile Performance Optimizations */
