@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Brain, Play, Check, Forward, Lightbulb, RotateCcw, Trophy, Clock, X, CheckCircle2 } from "lucide-react";
+import jsPDF from "jspdf";
 
 // Gemini API Configuration
 // Using Gemini 2.0 Flash-Lite model for quiz generation
@@ -26,6 +27,7 @@ interface QuizState {
   questionCount: number;
   questionType: string;
   subject: string;
+  customTopic?: string;
   questions: Question[];
   currentQuestionIndex: number;
   userAnswers: (string | null)[];
@@ -38,6 +40,16 @@ interface QuizState {
 }
 
 const StudentQuiz = () => {
+      const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(16);
+        doc.text("Your Personalized 7-Day Routine", 10, 20);
+        doc.setFontSize(12);
+        const lines = doc.splitTextToSize(routine, 180);
+        doc.text(lines, 10, 35);
+        doc.save("7-day-routine.pdf");
+      };
+    const [routine, setRoutine] = useState<string>("");
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<"setup" | "loading" | "quiz" | "results">("setup");
   const [loading, setLoading] = useState(false);
@@ -55,6 +67,7 @@ const StudentQuiz = () => {
     questionCount: 7,
     questionType: "",
     subject: "",
+    customTopic: "",
     questions: [],
     currentQuestionIndex: 0,
     userAnswers: [],
@@ -81,7 +94,8 @@ const StudentQuiz = () => {
   }, [activeSection, quizState.startTime]);
 
   const createPrompt = () => {
-    let prompt = `Create ${quizState.questionCount} high-quality educational quiz questions for a class ${quizState.class} student on the topic of "${quizState.subject}" at ${quizState.difficulty} difficulty level.\n\n`;
+    let topic = quizState.customTopic && quizState.customTopic.trim() !== "" ? quizState.customTopic : quizState.subject;
+    let prompt = `Create ${quizState.questionCount} high-quality educational quiz questions for a class ${quizState.class} student on the topic of "${topic}" at ${quizState.difficulty} difficulty level.\n\n`;
     
     if (quizState.questionType === 'mixed') {
       prompt += `Include a mix of question types: multiple choice questions, fill in the blanks, short answer questions, true/false questions, and assertion-reason questions.\n\n`;
@@ -399,7 +413,30 @@ Important:
 
   const endQuiz = () => {
     setQuizState(prev => ({ ...prev, endTime: new Date() }));
+    generateRoutine();
     setActiveSection("results");
+
+  };
+
+  // Generate 7-day routine using Gemini AI
+  const generateRoutine = async () => {
+    const topic = quizState.customTopic && quizState.customTopic.trim() !== "" ? quizState.customTopic : quizState.subject;
+    const prompt = `Create a personalized 7-day study routine for a student who just completed a quiz on the topic '${topic}'. The routine should include daily tasks, study tips, and revision suggestions. Format as a clear, readable list.`;
+    try {
+      const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 512 }
+        })
+      });
+      if (!response.ok) throw new Error("Failed to generate routine");
+      const data = await response.json();
+      setRoutine(data.candidates[0].content.parts[0].text);
+    } catch (err) {
+      setRoutine("Could not generate routine. Please try again later.");
+    }
   };
 
   const calculateResults = () => {
@@ -546,6 +583,14 @@ Important:
                   <option value="Social Studies">Social Studies</option>
                   <option value="General Knowledge">General Knowledge</option>
                 </select>
+                <label className="block text-xs sm:text-sm font-medium mb-2 mt-2">Or write your own topic</label>
+                <input
+                  type="text"
+                  className="w-full bg-muted border border-border rounded-lg p-2 sm:p-3 text-sm sm:text-base"
+                  placeholder="Type your topic here (e.g. Photosynthesis)"
+                  value={quizState.customTopic || ""}
+                  onChange={e => setQuizState(prev => ({ ...prev, customTopic: e.target.value }))}
+                />
               </div>
               <Button type="submit" className="w-full bg-gradient-to-r from-royal to-gold text-white text-sm sm:text-base py-5 sm:py-6">
                 <Play className="h-4 w-4 mr-2" />
@@ -781,6 +826,7 @@ Important:
         )}
 
         {activeSection === "results" && (
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -791,9 +837,8 @@ Important:
                 <Trophy className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-3 sm:mb-4 text-gold" />
                 <h2 className="text-2xl sm:text-3xl font-bold mb-2">Quiz Complete!</h2>
               </div>
-
               <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-6 sm:mb-8">
-                {[
+                {[ 
                   { label: "Score", value: calculateResults().score },
                   { label: "Correct", value: calculateResults().correct },
                   { label: "Incorrect", value: calculateResults().incorrect },
@@ -805,7 +850,21 @@ Important:
                   </div>
                 ))}
               </div>
-
+              {/* 7-Day Routine Section */}
+              <div className="mt-8">
+                <h3 className="text-lg sm:text-xl font-bold mb-2 text-royal">Your Personalized 7-Day Routine</h3>
+                <div className="bg-muted/30 rounded-lg p-4 whitespace-pre-line text-sm sm:text-base">
+                  {routine ? routine : "Generating your routine..."}
+                </div>
+                {routine && (
+                  <Button
+                    onClick={handleDownloadPDF}
+                    className="mt-4 mb-3 w-full bg-gradient-to-r from-royal to-gold text-white text-sm sm:text-base py-3"
+                  >
+                    Download Routine as PDF
+                  </Button>
+                )}
+              </div>
               <Button
                 onClick={() => {
                   setQuizState({
@@ -814,6 +873,7 @@ Important:
                     questionCount: 5,
                     questionType: "",
                     subject: "",
+                    customTopic: "",
                     questions: [],
                     currentQuestionIndex: 0,
                     userAnswers: [],
@@ -824,6 +884,7 @@ Important:
                     hintUsed: [],
                     showAnswer: []
                   });
+                  setRoutine("");
                   setActiveSection("setup");
                 }}
                 className="w-full bg-gradient-to-r from-royal to-gold text-white text-sm sm:text-base py-5 sm:py-6"
